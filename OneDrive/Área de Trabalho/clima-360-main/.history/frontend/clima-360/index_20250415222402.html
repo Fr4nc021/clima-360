@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/logo.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Clima 360</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.jsx"></script>
+        <script src="./location.js"></script>
+
+        <button onclick="buscarClimaLocal()">Buscar clima da minha localização</button>
+
+<script>
+  function buscarClimaLocal() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        const response = await fetch('http://localhost:3000/api/clima-por-coordenada', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ latitude, longitude })
+        });
+
+        const data = await response.json();
+        alert(`Temperatura atual: ${data.temperature}°C - ${data.weatherDescription}`);
+      }, () => {
+        alert("Erro ao obter localização.");
+      });
+    } else {
+      alert("Geolocalização não suportada pelo navegador.");
+    }
+  }
+</script>
+
+<input type="text" id="cidadeInput" placeholder="Digite a cidade">
+<button onclick="buscarClima()">Buscar Clima</button>
+
+<div id="resultado"></div>
+
+
+    </body>
+</html>
